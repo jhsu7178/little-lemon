@@ -1,5 +1,8 @@
 package com.example.littlelemon
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,125 +18,135 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
-class Onboarding {
 
-    @Preview(showBackground = true)
-    @Composable
-    fun OnboardingPreview() {
-        OnboardingScreen()
+
+@Composable
+fun OnboardingScreen(navController: NavController) {
+
+    var firstName by remember {
+        mutableStateOf(TextFieldValue(""))
     }
 
-    @Composable
-    fun OnboardingScreen() {
+    var lastName by remember {
+        mutableStateOf(TextFieldValue(""))
+    }
 
-        var firstName by remember {
-            mutableStateOf(TextFieldValue(""))
-        }
+    var email by remember {
+        mutableStateOf(TextFieldValue(""))
+    }
 
-        var lastName by remember {
-            mutableStateOf(TextFieldValue(""))
-        }
+    val context = LocalContext.current
 
-        var email by remember {
-            mutableStateOf(TextFieldValue(""))
+    val sharedPreferences = context.getSharedPreferences("LittleLemon", Context.MODE_PRIVATE)
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Image(
+            painter = painterResource(
+                id = R.drawable.logo),
+            contentDescription = "Logo Image",
+            contentScale = ContentScale.FillWidth,
+            modifier = Modifier
+                .width(150.dp)
+                .padding(10.dp)
+        )
+
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+
+            modifier = Modifier.fillMaxWidth()
+                .background(Color.Green)
+                .height(100.dp)
+                .padding(10.dp)
+
+        ) {
+            Text(
+                text = "Let's get to know you",
+                color = Color.White,
+                fontSize = 32.sp
+            )
         }
 
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
         ) {
-            Image(
-                painter = painterResource(
-                    id = R.drawable.logo),
-                contentDescription = "Logo Image",
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .width(150.dp)
-                    .padding(10.dp)
+            Text(
+                text = "Personal information"
             )
-
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-
-                modifier = Modifier.fillMaxWidth()
-                    .background(Color.Green)
-                    .height(100.dp)
-                    .padding(10.dp)
+        }
 
 
-            ) {
-                Text(
-                    text = "Let's get to know you",
-                    color = Color.White,
-                    fontSize = 32.sp
-                )
+        TextField(
+            value = firstName,
+            onValueChange = {
+                firstName = it
+            },
+            label = { Text(text = "First Name") },
+            modifier = Modifier.padding(10.dp),
 
-            }
+        )
 
-            Column(
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-            ) {
-                Text(
-                    text = "Personal information"
-                )
-            }
+        TextField(
+            value = lastName,
+            onValueChange = {
+                lastName = it
+            },
+            label = { Text(text = "Last Name") },
+            modifier = Modifier.padding(10.dp)
+        )
 
+        TextField(
+            value = email,
+            onValueChange = {
+                email = it
+            },
+            label = { Text(text = "Email") },
+            modifier = Modifier.padding(10.dp)
+        )
 
-            TextField(
-                value = firstName,
-                onValueChange = {
-                    firstName = it
-                },
-                label = { Text(text = "First Name") },
-                modifier = Modifier.padding(10.dp)
+        Button (
+            onClick = {
+                if (firstName.text.isBlank()
+                    || lastName.text.isBlank()
+                    || email.text.isBlank() ) {
+
+                    Toast.makeText(context,
+                    "Registration unsuccessful. Please enter all data",
+                        Toast.LENGTH_LONG).show()
+                } else {
+                    sharedPreferences.edit()
+                        .putString("firstName", firstName.text)
+                        .putString("lastName", lastName.text)
+                        .putString("email", email.text)
+                        .putBoolean("onboardingComplete", true).apply()
+                    navController.navigate(Home.route)
+
+                }
+            },
+
+            colors = ButtonDefaults.buttonColors(Color.Yellow),
+            modifier = Modifier
+                .padding(10.dp)
+                .height(40.dp)
+                .width(200.dp)
+        ) {
+
+            Text (
+                text = "Register",
+                color = Color.Black
 
             )
-
-            TextField(
-                value = lastName,
-                onValueChange = {
-                    lastName = it
-                },
-                label = { Text(text = "Last Name") },
-                modifier = Modifier.padding(10.dp)
-            )
-
-            TextField(
-                value = email,
-                onValueChange = {
-                    email = it
-                },
-                label = { Text(text = "Email") },
-                modifier = Modifier.padding(10.dp)
-            )
-
-            Button (
-                onClick = {
-
-                },
-
-                colors = ButtonDefaults.buttonColors(Color.Yellow),
-                modifier = Modifier
-                    .padding(10.dp)
-                    .height(40.dp)
-                    .width(200.dp)
-            ) {
-
-                Text (
-                    text = "Register",
-                    color = Color.Black
-
-                )
-            }
         }
     }
 }
