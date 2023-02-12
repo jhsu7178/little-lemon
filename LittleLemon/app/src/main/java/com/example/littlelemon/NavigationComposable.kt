@@ -28,7 +28,7 @@ fun Navigation (navController: NavHostController) {
         }
 
         composable(Profile.route) {
-            Profile()
+            Profile(navController)
         }
 
         composable(Onboarding.route) {
