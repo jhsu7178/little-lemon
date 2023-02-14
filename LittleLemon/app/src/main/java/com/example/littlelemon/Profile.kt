@@ -1,6 +1,6 @@
 package com.example.littlelemon
 
-import android.content.Context
+import android.content.SharedPreferences
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -9,17 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
 @Composable
-fun Profile(navController: NavHostController) {
-    val context = LocalContext.current
-    val sharedPreferences = context.getSharedPreferences("LittleLemon", Context.MODE_PRIVATE)
-
+fun Profile(navController: NavHostController, sharedPreferences: SharedPreferences) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -69,7 +64,5 @@ fun Profile(navController: NavHostController) {
                 text = "Log Out"
             )
         }
-
-
     }
 }

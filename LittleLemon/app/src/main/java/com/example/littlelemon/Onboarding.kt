@@ -2,6 +2,7 @@ package com.example.littlelemon
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,14 +19,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-
+import androidx.navigation.compose.rememberNavController
+import com.example.littlelemon.ui.theme.LittleLemonTheme
+import com.example.littlelemon.ui.theme.PrimaryColor1
+import com.example.littlelemon.ui.theme.PrimaryColor2
 
 
 @Composable
-fun OnboardingScreen(navController: NavController) {
+fun OnboardingScreen(navController: NavController, sharedPreferences: SharedPreferences?) {
 
     var firstName by remember {
         mutableStateOf(TextFieldValue(""))
@@ -41,7 +46,6 @@ fun OnboardingScreen(navController: NavController) {
 
     val context = LocalContext.current
 
-    val sharedPreferences = context.getSharedPreferences("LittleLemon", Context.MODE_PRIVATE)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -63,7 +67,7 @@ fun OnboardingScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
 
             modifier = Modifier.fillMaxWidth()
-                .background(Color.Green)
+                .background(PrimaryColor1)
                 .height(100.dp)
                 .padding(10.dp)
 
@@ -125,17 +129,15 @@ fun OnboardingScreen(navController: NavController) {
                     "Registration unsuccessful. Please enter all data",
                         Toast.LENGTH_LONG).show()
                 } else {
-                    sharedPreferences.edit()
-                        .putString("firstName", firstName.text)
-                        .putString("lastName", lastName.text)
-                        .putString("email", email.text)
-                        .putBoolean("onboardingComplete", true).apply()
+                    sharedPreferences?.edit()?.putString("firstName", firstName.text)
+                        ?.putString("lastName", lastName.text)?.putString("email", email.text)
+                        ?.putBoolean("onboardingComplete", true)?.apply()
                     navController.navigate(Home.route)
 
                 }
             },
 
-            colors = ButtonDefaults.buttonColors(Color.Yellow),
+            colors = ButtonDefaults.buttonColors(PrimaryColor2),
             modifier = Modifier
                 .padding(10.dp)
                 .height(40.dp)
@@ -148,5 +150,14 @@ fun OnboardingScreen(navController: NavController) {
 
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OnboardingPreview() {
+    val navController = rememberNavController()
+    LittleLemonTheme() {
+        OnboardingScreen(navController, null)
     }
 }
